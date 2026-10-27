@@ -1,0 +1,696 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Something for You 🌷</title>
+
+<style>
+:root {
+  --pink: #f5a6c0;
+  --deep: #d65e88;
+  --text: #94566e;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family: Georgia, serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 20% 20%, #ffd9e8, transparent 42%),
+    radial-gradient(ellipse at 80% 70%, #f9d2e0, transparent 45%),
+    linear-gradient(145deg, #fff0f5, #ffe0eb 55%, #fff6f8);
+}
+
+button {
+  font: inherit;
+}
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 38px 15px 28px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+h1 {
+  color: #c75f83;
+  font-weight: normal;
+  font-size: clamp(28px, 6vw, 42px);
+  line-height: 1.2;
+  margin-bottom: 12px;
+  text-shadow: 0 3px 20px #fff;
+}
+
+.subtitle {
+  font-size: 15px;
+  color: #bd7590;
+  margin-bottom: 22px;
+}
+
+.background-blur {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: transparent;
+  backdrop-filter: blur(0);
+  transition: backdrop-filter .8s, background .8s;
+}
+
+body.opened .background-blur {
+  backdrop-filter: blur(5px);
+  background: #ffe6ef25;
+}
+
+/* Envelope */
+
+.scene {
+  position: relative;
+  width: min(570px, 94vw);
+  height: 620px;
+  margin: 0 auto;
+  perspective: 1000px;
+  cursor: pointer;
+}
+
+.envelope {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  width: min(100%, 520px);
+  height: 300px;
+  border-radius: 9px;
+  background: linear-gradient(145deg, #f9b3cc, #ee8eaf);
+  box-shadow: 0 25px 60px #d65e8840;
+  overflow: hidden;
+  z-index: 4;
+}
+
+.envelope-front {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(145deg, #f6a7c2, #ed8eaf);
+  clip-path: polygon(0 100%, 0 0, 50% 58%, 100% 0, 100% 100%);
+  z-index: 2;
+}
+
+.envelope-bottom {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(140deg, #f8b1ca, #ed8eaf);
+  clip-path: polygon(0 100%, 50% 55%, 100% 100%);
+  z-index: 3;
+}
+
+.flap {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  width: min(100%, 520px);
+  height: 300px;
+  background: #e985a8;
+  clip-path: polygon(0 0, 100% 0, 50% 60%);
+  transform-origin: top center;
+  transition: transform .8s ease;
+  z-index: 7;
+}
+
+.seal {
+  position: absolute;
+  z-index: 8;
+  bottom: 85px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 42px;
+  filter: drop-shadow(0 4px 5px #b54e772e);
+  transition: opacity .35s;
+}
+
+/* Letter */
+
+.letter {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 150px;
+  transform: translateX(-50%);
+  width: min(88%, 450px);
+  height: 290px;
+  overflow: hidden;
+  padding: 25px 24px;
+  border: 1px solid #ffffffb0;
+  border-radius: 16px 16px 5px 5px;
+  background: rgba(255, 250, 248, .86);
+  box-shadow: 0 5px 35px #d65e8825;
+  backdrop-filter: blur(2px);
+  text-align: left;
+  transition:
+    bottom .9s ease,
+    height .9s ease,
+    width .9s ease,
+    background .8s,
+    backdrop-filter .8s;
+}
+
+.letter h2 {
+  color: #d16d90;
+  font-size: 25px;
+  font-weight: normal;
+  margin-bottom: 12px;
+}
+
+.letter-content {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(14px);
+  transition:
+    opacity .65s,
+    transform .65s,
+    visibility 0s linear .65s;
+}
+
+.message {
+  white-space: pre-line;
+  line-height: 1.75;
+  font-size: 14px;
+}
+
+.signature {
+  text-align: center;
+  margin: 18px 0 6px;
+  font-style: italic;
+  color: #c76d91;
+  font-size: 16px;
+}
+
+/* Three pink tulips */
+
+
+.bouquet {
+  position: relative;
+  width: 220px;
+  height: 240px;
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transform: translateY(15px) scale(.85);
+  transition: opacity .8s ease, transform .8s ease;
+}
+
+.bouquet img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 12px #d65e8820);
+}
+
+.scene.open .bouquet {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  transition-delay: .65s;
+}
+
+@media (max-width: 520px) {
+  .bouquet {
+    width: 190px;
+    height: 220px;
+    margin-bottom: 8px;
+  }
+}
+@keyframes sway {
+  0%, 100% {
+    translate: 0 0;
+    rotate: -2deg;
+  }
+  50% {
+    translate: 0 0;
+    rotate: 2deg;
+  }
+}
+
+.stem {
+  position: absolute;
+  left: 30px;
+  bottom: 0;
+  width: 5px;
+  height: 115px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #3d7048, #83ad70, #477b4c);
+}
+
+.leaf {
+  position: absolute;
+  left: 25px;
+  bottom: 26px;
+  width: 23px;
+  height: 62px;
+  border-radius: 100% 0 100% 0;
+  transform: rotate(-35deg);
+  background: linear-gradient(135deg, #a0c987, #5b985b 60%, #367148);
+}
+
+.leaf.right {
+  left: 8px;
+  bottom: 42px;
+  transform: rotate(45deg) scaleX(-1);
+  background: linear-gradient(135deg, #a4cd88, #4b8a50);
+}
+
+.flower {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 65px;
+  height: 62px;
+}
+
+.petal {
+  position: absolute;
+  bottom: 0;
+  width: 29px;
+  height: 46px;
+  border-radius: 60% 60% 35% 35%;
+  background: linear-gradient(110deg, #ffbfd5, #f36e9c 65%, #d94479);
+  box-shadow: inset 2px 0 4px #ffffff50;
+}
+
+.petal.p1 {
+  left: 2px;
+  transform: rotate(-23deg);
+}
+
+.petal.p2 {
+  right: 2px;
+  transform: rotate(23deg);
+}
+
+.petal.p3 {
+  left: 18px;
+  bottom: 6px;
+  height: 52px;
+  z-index: 2;
+  background: linear-gradient(100deg, #ffcfdf, #fa82ab 65%, #e34e83);
+}
+
+.petal.p4 {
+  left: 18px;
+  height: 42px;
+  transform: rotate(180deg);
+  background: linear-gradient(#e75d91, #f9a4c0);
+}
+
+.sparkle {
+  position: absolute;
+  color: #e99ab6;
+  font-size: 20px;
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.s1 {
+  top: 22px;
+  left: 0;
+}
+
+.s2 {
+  top: 70px;
+  right: 0;
+  animation-delay: .5s;
+}
+
+.s3 {
+  top: 0;
+  right: 22px;
+  animation-delay: 1s;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: .3;
+    transform: scale(.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+/* Open animation */
+
+.scene.open .flap {
+  transform: translateX(-50%) rotateX(180deg);
+  z-index: 1;
+}
+
+.scene.open .seal {
+  opacity: 0;
+}
+
+.scene.open .letter {
+  z-index: 9;
+  bottom: 70px;
+  width: min(92%, 470px);
+  height: min(535px, 72vh);
+  min-height: 430px;
+  overflow-y: auto;
+  background: rgba(255, 250, 248, .9);
+  backdrop-filter: blur(12px);
+  transition-delay: .2s;
+}
+
+.scene.open .letter-content {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition-delay: .75s;
+}
+
+/* Buttons and footer */
+
+.hint {
+  color: #c46c8b;
+  font-size: 15px;
+  margin-top: 8px;
+  animation: pulse 1.8s infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: .5;
+  }
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+.btn {
+  min-width: 145px;
+  padding: 13px 21px;
+  border-radius: 40px;
+  font-size: 14px;
+  border: 1px solid #efabc2;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px #d65e8825;
+}
+
+.music-btn {
+  color: white;
+  background: linear-gradient(135deg, #e47ca0, #d65e88);
+  border-color: transparent;
+}
+
+.replay-btn {
+  color: #c75f83;
+  background: #fff1f6d9;
+}
+
+.footer {
+  margin-top: 25px;
+  color: #bd8197;
+  font-size: 13px;
+}
+
+/* Falling petals */
+
+.falling-petal {
+  position: fixed;
+  top: -35px;
+  z-index: 20;
+  pointer-events: none;
+  animation: fall linear forwards;
+  filter: drop-shadow(0 3px 5px #e98cac45);
+}
+
+@keyframes fall {
+  0% {
+    transform: translate(0, -20px) rotate(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: .8;
+  }
+  100% {
+    transform: translate(80px, 110vh) rotate(540deg);
+    opacity: 0;
+  }
+}
+
+/* Mobile layout */
+
+@media (max-width: 520px) {
+  .page {
+    padding-top: 30px;
+  }
+
+  .scene {
+    height: 540px;
+  }
+
+  .envelope,
+  .flap {
+    height: 260px;
+  }
+
+  .letter {
+    bottom: 130px;
+    padding: 20px 17px;
+  }
+
+  .scene.open .letter {
+    bottom: 45px;
+    height: 470px;
+    min-height: 0;
+  }
+
+  .bouquet {
+    transform: scale(.88);
+    transform-origin: top center;
+    margin-bottom: 4px;
+  }
+
+  .scene.open .bouquet {
+    transform: scale(.88);
+  }
+
+  .message {
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .letter h2 {
+    font-size: 22px;
+  }
+
+  .seal {
+    bottom: 70px;
+  }
+
+  .controls {
+    margin-top: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tulip,
+  .sparkle,
+  .hint {
+    animation: none;
+  }
+
+  .falling-petal {
+    display: none;
+  }
+
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="background-blur" aria-hidden="true"></div>
+
+<main class="page">
+  <h1>A Little Something<br>for You 🌷</h1>
+  
+
+  <div class="scene" id="scene" role="button" tabindex="0"
+       aria-label="Open your letter" aria-expanded="false">
+
+    <div class="letter">
+      <h2>Dear aica, ♡</h2>
+
+      <div class="letter-content">
+        <div class="bouquet">
+  <img
+    src="flower.png"
+    alt="Three realistic pink tulips with green stems and leaves"
+  >
+</div>
+
+        <div class="message">I wanted to give you something little but meaningful, so here's a bouquet of pink tulips just for you. 🌷
+
+I hope these flowers remind you that you're special, that you deserve kindness, and that even the smallest things can bring a little happiness to your day.
+
+If I could, I'd give you these flowers in person and see your smile when you receive them. For now, let this little letter be a reminder that someone is thinking of you and wishing you nothing but beautiful days ahead.
+
+You don't always need a special occasion to deserve flowers. Sometimes, you just deserve them because you're you. ♡</div>
+
+        <div class="signature">With love and a little pink magic, ♡</div>
+      </div>
+    </div>
+
+    <div class="envelope">
+      <div class="envelope-front"></div>
+      <div class="envelope-bottom"></div>
+    </div>
+
+    <div class="flap"></div>
+    <div class="seal">💗</div>
+  </div>
+
+  <p class="hint" id="hint">♡ Tap to open ♡</p>
+
+  <div class="controls">
+    <button class="btn music-btn" id="musicBtn" type="button">
+      ♫ Play Music
+    </button>
+
+    <button class="btn replay-btn" id="replayBtn" type="button">
+      ↻ Replay
+    </button>
+  </div>
+
+
+  <audio id="bgMusic" loop preload="none"></audio>
+  <audio id="bgMusic" loop preload="none">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+</main>
+
+<script>
+const scene = document.getElementById('scene');
+const hint = document.getElementById('hint');
+const musicBtn = document.getElementById('musicBtn');
+const replayBtn = document.getElementById('replayBtn');
+const bgMusic = document.getElementById('bgMusic');
+
+let isOpen = false;
+let petalTimer = null;
+
+// Put music.mp3 in the same folder as this HTML file.
+bgMusic.src = 'music.mp3';
+
+function openLetter() {
+  if (isOpen) return;
+
+  isOpen = true;
+  scene.classList.add('open');
+  document.body.classList.add('opened');
+  scene.setAttribute('aria-expanded', 'true');
+  hint.textContent = '♡ A little message just for you ♡';
+
+  startPetals();
+}
+
+function closeLetter() {
+  isOpen = false;
+  scene.classList.remove('open');
+  document.body.classList.remove('opened');
+  scene.setAttribute('aria-expanded', 'false');
+  hint.textContent = '♡ Tap to open ♡';
+
+  stopPetals();
+}
+
+function replayLetter() {
+  closeLetter();
+  void scene.offsetWidth;
+  setTimeout(openLetter, 350);
+}
+
+function createPetal() {
+  if (!isOpen) return;
+
+  const petal = document.createElement('span');
+  petal.className = 'falling-petal';
+  petal.textContent = Math.random() > 0.5 ? '❀' : '♥';
+  petal.style.left = Math.random() * 100 + 'vw';
+  petal.style.color = Math.random() > 0.5 ? '#f18fb1' : '#ffc1d6';
+  petal.style.fontSize = (12 + Math.random() * 14) + 'px';
+  petal.style.animationDuration = (5 + Math.random() * 5) + 's';
+
+  document.body.appendChild(petal);
+
+  setTimeout(() => petal.remove(), 11000);
+}
+
+function startPetals() {
+  if (petalTimer) return;
+  petalTimer = setInterval(createPetal, 650);
+}
+
+function stopPetals() {
+  clearInterval(petalTimer);
+  petalTimer = null;
+
+  document.querySelectorAll('.falling-petal').forEach(petal => {
+    petal.remove();
+  });
+}
+
+musicBtn.addEventListener('click', async () => {
+  if (bgMusic.paused) {
+    try {
+      await bgMusic.play();
+      musicBtn.textContent = '♫ Pause Music';
+    } catch (error) {
+      hint.textContent = '♡ Add music.mp3 beside index.html ♡';
+    }
+  } else {
+    bgMusic.pause();
+    musicBtn.textContent = '♫ Play Music';
+  }
+});
+
+replayBtn.addEventListener('click', replayLetter);
+
+scene.addEventListener('click', openLetter);
+
+scene.addEventListener('keydown', event => {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault();
+    openLetter();
+  }
+});
+</script>
+</body>
+</html>
